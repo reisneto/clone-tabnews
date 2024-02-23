@@ -1,5 +1,15 @@
 import { Client } from "pg";
 
+function resolveSSL() {
+  if (process.env.NODE_ENV === "production") {
+    return {
+      ca: process.env.CA_CERT.replace(/\\n/g, "\n"),
+    };
+  } else {
+    return false;
+  }
+}
+
 async function query(queryObj) {
   const client = new Client({
     host: process.env.POSTGRES_HOST,
@@ -7,15 +17,8 @@ async function query(queryObj) {
     user: process.env.POSTGRES_USER,
     database: process.env.POSTGRES_DB,
     password: process.env.POSTGRES_PASSWORD,
-    ssl: process.env.NODE_ENV === "production",
-  });
-
-  console.log("Credenciais Postgres", {
-    host: process.env.POSTGRES_HOST,
-    port: process.env.POSTGRES_PORT,
-    user: process.env.POSTGRES_USER,
-    database: process.env.POSTGRES_DB,
-    password: process.env.POSTGRES_PASSWORD,
+    // ssl: process.env.NODE_ENV === "production",
+    ssl: resolveSSL(),
   });
 
   try {
