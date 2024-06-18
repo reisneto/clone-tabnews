@@ -1,13 +1,7 @@
 import { Client } from "pg";
 
 function resolveSSL() {
-  if (process.env.NODE_ENV === "production") {
-    return {
-      ca: process.env.CA_CERT.replace(/\\n/g, "\n"),
-    };
-  } else {
-    return false;
-  }
+  return process.env.NODE_ENV === "production";
 }
 
 async function getNewClient() {
